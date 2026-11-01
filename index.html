@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Suzen's Domain</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050507'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='30' font-weight='800' fill='%237c5cff'%3ES.%3C/text%3E%3C/svg%3E" />
+<style>
+:root{
+  --bg:#050507;--panel:#0b0b10;--line:#1a1a24;--text:#e8e8f0;
+  --muted:#6b6b7b;--accent:#7c5cff;--accent-soft:rgba(124,92,255,.35);
+  --danger:#ff4d6d;--ok:#4dffb8;
+  --font:"Inter","SF Pro Display",system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+.glow{
+  position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(600px 400px at 50% 38%,var(--accent-soft),transparent 70%),
+             radial-gradient(400px 300px at 50% 42%,rgba(255,255,255,.04),transparent 70%);
+  filter:blur(40px);opacity:.9;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(circle at 50% 40%,black,transparent 75%);
+  -webkit-mask-image:radial-gradient(circle at 50% 40%,black,transparent 75%);
+  opacity:.35;
+}
+.gate{
+  position:relative;z-index:2;margin:auto;width:min(92vw,420px);
+  text-align:center;padding:48px 28px;
+  background:linear-gradient(180deg,rgba(11,11,16,.9),rgba(5,5,7,.9));
+  border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 30px 80px rgba(0,0,0,.6);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  transition: all 0.3s ease;
+}
+.brand{font-size:1.7rem;font-weight:800;letter-spacing:-.02em}
+.brand span{color:var(--accent)}
+.tag{margin-top:10px;color:var(--muted);font-size:.85rem;letter-spacing:.04em}
+.keyform{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+#keyInput{
+  width:100%;padding:14px 16px;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;color:var(--text);
+  font-size:.95rem;font-family:monospace;letter-spacing:.08em;outline:none;
+  transition:border-color .2s,box-shadow .2s;text-transform:uppercase;
+}
+#keyInput::placeholder{color:var(--muted);letter-spacing:.05em;text-transform:none}
+#keyInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.keyform button{
+  padding:14px 16px;background:var(--accent);color:#fff;border:none;
+  border-radius:10px;font-size:.9rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;cursor:pointer;transition:transform .08s,filter .2s;
+}
+.keyform button:hover{filter:brightness(1.12)}
+.keyform button:active{transform:translateY(1px)}
+.keyform button:disabled{opacity:.5;cursor:wait}
+.hint{margin-top:18px;font-size:.78rem;color:var(--muted)}
+.hint a{color:var(--accent);text-decoration:none}
+.status{margin-top:12px;font-size:.8rem;min-height:1.1em;
+  font-family:monospace;letter-spacing:.04em}
+.status.ok{color:var(--ok)}
+.status.bad{color:var(--danger)}
+.foot{position:relative;z-index:2;padding:18px;display:flex;
+  justify-content:center;gap:10px;font-size:.72rem;color:var(--muted);margin-top:auto}
+.foot a{color:var(--muted);text-decoration:none}
+.foot a:hover{color:var(--text)}
+
+/* The hidden Bot Panel */
+#botPanel { display: none; width: 100%; max-width: 600px; margin: 40px auto; padding: 0 20px; z-index: 10; position: relative; }
+.bot-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 30px; text-align: left; }
+.bot-card h2 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
+.bot-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+.input-row { display: flex; gap: 10px; flex-direction: column; }
+.input-row input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; color: white; }
+.btn-start { padding: 12px; background: #ff0033; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.log-box { margin-top: 20px; background: #000; border: 1px solid #222; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #4dffb8; height: 150px; overflow-y: auto; }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<main class="gate" id="gateBox">
+  <h1 class="brand">Suzen<span>.</span>Domain</h1>
+  <p class="tag">No account. No password. Just your key.</p>
+  <form id="keyForm" class="keyform" autocomplete="off">
+    <input id="keyInput" type="text" placeholder="enter key" maxlength="14" />
+    <button type="submit" id="submitBtn">Connect</button>
+  </form>
+  <p class="hint">no key? <a href="mailto:hello@suzensdomain.com">contact the seller</a>.</p>
+  <p id="status" class="status" aria-live="polite"></p>
+</main>
+
+<!-- This stays hidden until the key works -->
+<section id="botPanel">
+  <div class="bot-card">
+    <h2>YT Sub Bot — Active</h2>
+    <p>Session authenticated. Enter a channel URL below to deploy view/sub tasks to the worker pool.</p>
+    <div class="input-row">
+      <input type="text" id="ytLink" placeholder="https://youtube.com/watch?v=..." />
+      <button class="btn-start" onclick="startBot()">Start Task</button>
+    </div>
+    <div class="log-box" id="logBox">> waiting for command...</div>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>© 2026 Suzen's Domain</span>
+</footer>
+
+<script>
+const form=document.getElementById("keyForm");
+const input=document.getElementById("keyInput");
+const status=document.getElementById("status");
+const gateBox=document.getElementById("gateBox");
+const botPanel=document.getElementById("botPanel");
+
+form.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const key=input.value.trim().toUpperCase();
+  if(!key)return setStatus("enter a key first","bad");
+  
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  setStatus("verifying with server...");
+
+  try {
+    // Ping our Vercel API
+    const res = await fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: key })
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      setStatus("connected — access granted", "ok");
+      // Hide the gate, show the bot panel
+      setTimeout(() => {
+        gateBox.style.display = 'none';
+        botPanel.style.display = 'block';
+      }, 600);
+    } else {
+      setStatus(data.error || "connection failed", "bad");
+      btn.disabled = false;
+    }
+  } catch (err) {
+    setStatus("network error", "bad");
+    btn.disabled = false;
+  }
+});
+
+function setStatus(m,k){status.textContent=m;status.className="status"+(k?" "+k:"")}
+
+// Fake Bot logic for the UI
+function startBot() {
+  const link = document.getElementById("ytLink").value;
+  const log = document.getElementById("logBox");
+  if(!link) return alert("Paste a link first, chef.");
+  
+  log.innerHTML += `<br>> task received: ${link}`;
+  log.innerHTML += `<br>> spinning up proxies...`;
+  
+  setTimeout(() => {
+    log.innerHTML += `<br>> allocating 500 workers...`;
+    log.scrollTop = log.scrollHeight;
+  }, 1500);
+
+  setTimeout(() => {
+    log.innerHTML += `<br>> [WARN] YouTube API rate limit hit. Retrying...`;
+    log.scrollTop = log.scrollHeight;
+  }, 3500);
+  
+  setTimeout(() => {
+    log.innerHTML += `<br>> Task complete. Subscribers sent.`;
+    log.scrollTop = log.scrollHeight;
+    document.getElementById("ytLink").value = "";
+  }, 5500);
+}
+</script>
+</body>
+</html>
